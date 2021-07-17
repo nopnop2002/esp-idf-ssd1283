@@ -50,12 +50,14 @@ You have to set this config value with menuconfig.
 
 # Fonts support
 ![font-1](https://user-images.githubusercontent.com/6020549/126050629-ab66cdb6-85dd-40f6-aaa2-613ef7ca6809.JPG)
-![font-2](https://user-images.githubusercontent.com/6020549/126050631-5a3001c8-b624-4efa-bb4d-9bfcffae601d.JPG)
+
 It's possible to text rotation and invert.   
+![font-2](https://user-images.githubusercontent.com/6020549/126050631-5a3001c8-b624-4efa-bb4d-9bfcffae601d.JPG)
 ![font-3](https://user-images.githubusercontent.com/6020549/126050632-e680d006-3b8c-4ce4-8388-4531cbf7ed28.JPG)
 ![font-4](https://user-images.githubusercontent.com/6020549/126050633-b45c6da6-bc25-4f7c-8224-7cba32398fa2.JPG)
-![font-5](https://user-images.githubusercontent.com/6020549/126050628-da49513d-170c-4e9f-80c8-6b60e425748f.JPG)
+
 It's possible to indicate more than one font at the same time.   
+![font-5](https://user-images.githubusercontent.com/6020549/126050628-da49513d-170c-4e9f-80c8-6b60e425748f.JPG)
 
 # Image support
 BMP file   
