@@ -62,8 +62,11 @@ It's possible to indicate more than one font at the same time.
 # Image support
 BMP file   
 ![image-bmp](https://user-images.githubusercontent.com/6020549/126050669-55fbd893-dd51-46aa-9cb1-a6a6bd80fbaa.JPG)
+The image file is quoted from [here](https://hombre-nuevo.com/microcomputer/esp320001/).
+
 JPEG file(ESP32 only)   
 ![image-jpeg](https://user-images.githubusercontent.com/6020549/126050672-e3cf5f51-6a5f-43f4-80e9-2f6652eddab8.JPG)
+
 PNG file    
 ![image-png](https://user-images.githubusercontent.com/6020549/126050677-40bcb450-34b2-49a7-a597-c3a145e7ba5a.JPG)
 
