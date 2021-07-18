@@ -3,6 +3,8 @@ SSD1283 Driver for esp-idf
 
 ![graph-1](https://user-images.githubusercontent.com/6020549/126050614-814f0c07-6e0a-42d3-b91f-4002d781618e.JPG)
 
+1.6" 130x130.   
+
 # Installation for ESP32
 
 ```
