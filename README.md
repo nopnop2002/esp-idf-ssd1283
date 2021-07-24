@@ -24,9 +24,9 @@ idf.py set-target esp32s2
 idf.py menuconfig
 idf.py flash
 ```
-
-# ESP32-S2 Limitation   
-- tjpgd library does not exist in ESP32-S2 ROM.   
+__Note__   
+tjpgd library does not exist in ESP32-S2 ROM.   
+Therefore, the JPEG file cannot be displayed.   
 
 # Configuration   
 You have to set this config value with menuconfig.   
