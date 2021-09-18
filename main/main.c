@@ -968,7 +968,7 @@ void SSD1283(void *pvParameters)
 		BMPTest(&dev, file, CONFIG_WIDTH, CONFIG_HEIGHT);
 		WAIT;
 
-#ifdef CONFIG_IDF_TARGET_ESP32
+#ifndef CONFIG_IDF_TARGET_ESP32S2
 		strcpy(file, "/spiffs/esp32.jpeg");
 		JPEGTest(&dev, file, CONFIG_WIDTH, CONFIG_HEIGHT);
 		WAIT;

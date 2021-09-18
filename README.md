@@ -1,9 +1,12 @@
 # esp-idf-ssd1283
-SSD1283 Driver for esp-idf
+SSD1283 Driver for esp-idf.   
+SSD1283 is 1.6" 130x130.   
 
 ![graph-1](https://user-images.githubusercontent.com/6020549/126050614-814f0c07-6e0a-42d3-b91f-4002d781618e.JPG)
 
-1.6" 130x130.   
+# Software requirements
+esp-idf v4.4 or later.   
+This is because this version supports ESP32-C3.   
 
 # Installation for ESP32
 
@@ -24,9 +27,26 @@ idf.py set-target esp32s2
 idf.py menuconfig
 idf.py flash
 ```
+
 __Note__   
 tjpgd library does not exist in ESP32-S2 ROM.   
 Therefore, the JPEG file cannot be displayed.   
+
+# Installation for ESP32-C3
+
+```Shell
+git clone https://github.com/nopnop2002/esp-idf-ssd1283
+cd esp-idf-ssd1283
+idf.py set-target esp32c3
+idf.py menuconfig
+idf.py flash
+```
+
+__Note__   
+For some reason GPIO06, GPIO08, GPIO09, GPIO19 cannot be used for SPI clock pins on my board.   
+I looked at the ESP32-C3 datasheet, but I don't understand why.   
+This may be a problem only for my board.   
+If you find a solution, please let me know.   
 
 # Configuration   
 You have to set this config value with menuconfig.   
