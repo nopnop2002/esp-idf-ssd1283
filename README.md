@@ -1,6 +1,6 @@
 # esp-idf-ssd1283
 SSD1283 Driver for esp-idf.   
-SSD1283 is 1.6" 130x130.   
+My SSD1283 is 1.6" 130x130.   
 
 ![graph-1](https://user-images.githubusercontent.com/6020549/126050614-814f0c07-6e0a-42d3-b91f-4002d781618e.JPG)
 
@@ -43,10 +43,9 @@ idf.py flash
 ```
 
 __Note__   
-For some reason GPIO06, GPIO08, GPIO09, GPIO19 cannot be used for SPI clock pins on my board.   
-I looked at the ESP32-C3 datasheet, but I don't understand why.   
-This may be a problem only for my board.   
-If you find a solution, please let me know.   
+For some reason, there are development boards that cannot use GPIO06, GPIO08, GPIO09, GPIO19 for SPI clock pins.   
+According to the ESP32C3 specifications, these pins can also be used as SPI clocks.   
+I used a raw ESP-C3-13 to verify that these pins could be used as SPI clocks.   
 
 # Configuration   
 You have to set this config value with menuconfig.   
