@@ -5,47 +5,46 @@ My SSD1283 is 1.6" 130x130.
 ![graph-1](https://user-images.githubusercontent.com/6020549/126050614-814f0c07-6e0a-42d3-b91f-4002d781618e.JPG)
 
 # Software requirements
-esp-idf v4.4 or later.   
-This is because this version supports ESP32-C3.   
+ESP-IDF V4.4/V5.x.   
 
-# Installation for ESP32
+# Installation for ESP-IDF V4.4
 
 ```
-git clone https://github.com/nopnop2002/esp-idf-ssd1283
+git clone -b v4.4 https://github.com/nopnop2002/esp-idf-ssd1283
 cd esp-idf-ssd1283
-idf.py set-target esp32
+idf.py set-target {esp32/esp32s2/esp32c3}
 idf.py menuconfig
 idf.py flash
 ```
 
-# Installation for ESP32-S2
-
-```
-git clone https://github.com/nopnop2002/esp-idf-ssd1283
-cd esp-idf-ssd1283
-idf.py set-target esp32s2
-idf.py menuconfig
-idf.py flash
-```
-
-__Note__   
-tjpgd library does not exist in ESP32-S2 ROM.   
+__Note for ESP32-S2__   
+The tjpgd library is not included in the ESP32-S2 ROM because the ROM of the ESP32-S2 is small.   
 Therefore, the JPEG file cannot be displayed.   
 
-# Installation for ESP32-C3
+__Note for ESP32-C3__   
+For some reason, there are development boards that cannot use GPIO06, GPIO08, GPIO09, GPIO19 for SPI clock pins.   
+According to the ESP32C3 specifications, these pins can also be used as SPI clocks.   
+I used a raw ESP-C3-13 to verify that these pins could be used as SPI clocks.   
+
+
+# Installation for ESP-IDF V5.x
 
 ```Shell
 git clone https://github.com/nopnop2002/esp-idf-ssd1283
 cd esp-idf-ssd1283
-idf.py set-target esp32c3
+idf.py set-target {esp32/esp32s2/esp32s3/esp32c2/esp32c3/esp32c6}
 idf.py menuconfig
 idf.py flash
 ```
 
-__Note__   
-For some reason, there are development boards that cannot use GPIO06, GPIO08, GPIO09, GPIO19 for SPI clock pins.   
-According to the ESP32C3 specifications, these pins can also be used as SPI clocks.   
-I used a raw ESP-C3-13 to verify that these pins could be used as SPI clocks.   
+__Note for ESP32-S2/ESP32-C2__   
+The tjpgd library is not included in the ESP32-S2/ESP32-C2 ROM.   
+However, you can use [this](https://components.espressif.com/components/espressif/esp_jpeg) IDF component registry.   
+JPEG files can be displayed.   
+
+__Note for ESP32-C6__   
+ESP-IDF V5.1 is required when using ESP32-C6.   
+
 
 # Configuration   
 You have to set this config value with menuconfig.   

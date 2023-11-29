@@ -1,8 +1,29 @@
 #include <stdio.h>
+#include <inttypes.h>
+#include "freertos/FreeRTOS.h"
+#include "freertos/task.h"
 #include "decode_jpeg.h"
-//#include "esp32/rom/tjpgd.h"
-#include "rom/tjpgd.h"
+#include "esp_rom_caps.h"
 #include "esp_log.h"
+
+#if CONFIG_JD_USE_ROM
+/* When supported in ROM, use ROM functions */
+#if defined(ESP_ROM_HAS_JPEG_DECODE)
+#include "rom/tjpgd.h"
+#define JPEG "rom tjpgd"
+/* The ROM code of TJPGD is older and has different return type in decode callback */
+typedef unsigned int jpeg_decode_out_t;
+#else
+#error Using JPEG decoder from ROM is not supported for selected target. Please select external code in menuconfig.
+#endif
+
+#else
+/* When Tiny JPG Decoder is not in ROM or selected external code */
+#include "tjpgd.h"
+#define JPEG "external tjpgd"
+/* The TJPGD outside the ROM code is newer and has different return type in decode callback */
+typedef int jpeg_decode_out_t;
+#endif
 
 //Data that is passed from the decoder function to the infunc/outfunc functions.
 typedef struct {
@@ -14,7 +35,6 @@ typedef struct {
 
 
 //Input function for jpeg decoder. Just returns bytes from the inData field of the JpegDev structure.
-//static UINT infunc(JDEC *decoder, BYTE *buf, UINT len) {
 static unsigned int infunc(JDEC *decoder, uint8_t *buf, unsigned int len) {
 	JpegDev *jd = (JpegDev *) decoder->device;
 	ESP_LOGD(__FUNCTION__, "infunc len=%d fp=%p", len, jd->fp);
@@ -34,8 +54,7 @@ static unsigned int infunc(JDEC *decoder, uint8_t *buf, unsigned int len) {
 
 //Output function. Re-encodes the RGB888 data from the decoder as big-endian RGB565 and
 //stores it in the outData array of the JpegDev structure.
-//static UINT outfunc(JDEC *decoder, void *bitmap, JRECT *rect) {
-static unsigned int outfunc(JDEC *decoder, void *bitmap, JRECT *rect) {
+static jpeg_decode_out_t outfunc(JDEC *decoder, void *bitmap, JRECT *rect) {
 	JpegDev *jd = (JpegDev *) decoder->device;
 	uint8_t *in = (uint8_t *) bitmap;
 	ESP_LOGD(__FUNCTION__, "rect->top=%d rect->bottom=%d", rect->top, rect->bottom);
@@ -77,19 +96,15 @@ uint8_t getScale(int screenWidth, int screenHeight, uint16_t decodeWidth, uint16
 
 }
 
-//Size of the work space for the jpeg decoder.
-#define WORKSZ 3100
-
 //Decode the embedded image into pixel lines that can be used with the rest of the logic.
 esp_err_t decode_jpeg(pixel_jpeg ***pixels, char * file, int screenWidth, int screenHeight, int * imageWidth, int * imageHeight) {
 	char *work = NULL;
-	int r;
 	JDEC decoder;
 	JpegDev jd;
 	*pixels = NULL;
 	esp_err_t ret = ESP_OK;
 
-
+	ESP_LOGW(__FUNCTION__, "v5 version. JPEG Decoder is %s", JPEG);
 	//Alocate pixel memory. Each line is an array of IMAGE_W 16-bit pixels; the `*pixels` array itself contains pointers to these lines.
 	*pixels = calloc(screenHeight, sizeof(pixel_jpeg *));
 	if (*pixels == NULL) {
@@ -107,13 +122,16 @@ esp_err_t decode_jpeg(pixel_jpeg ***pixels, char * file, int screenWidth, int sc
 	}
 
 	//Allocate the work space for the jpeg decoder.
-	work = calloc(WORKSZ, 1);
+	uint32_t free_heap_size = esp_get_free_heap_size();
+	ESP_LOGI(__FUNCTION__, "esp_get_free_heap_size=%"PRIu32, free_heap_size);
+	uint32_t jd_work_size = free_heap_size/2;
+	ESP_LOGI(__FUNCTION__, "jd_work_size=%"PRIu32, jd_work_size);
+	work = calloc(jd_work_size, 1);
 	if (work == NULL) {
 		ESP_LOGE(__FUNCTION__, "Cannot allocate workspace");
 		ret = ESP_ERR_NO_MEM;
 		goto err;
 	}
-
 	
 	//Populate fields of the JpegDev struct.
 	jd.outData = *pixels;
@@ -128,9 +146,10 @@ esp_err_t decode_jpeg(pixel_jpeg ***pixels, char * file, int screenWidth, int sc
 	ESP_LOGD(__FUNCTION__, "jd.fp=%p", jd.fp);
 
 	//Prepare and decode the jpeg.
-	r = jd_prepare(&decoder, infunc, work, WORKSZ, (void *) &jd);
-	if (r != JDR_OK) {
-		ESP_LOGE(__FUNCTION__, "Image decoder: jd_prepare failed (%d)", r);
+	JRESULT res;
+	res = jd_prepare(&decoder, infunc, work, jd_work_size, &jd);
+	if (res != JDR_OK) {
+		ESP_LOGE(__FUNCTION__, "Image decoder: jd_prepare failed (%d)", res);
 		ret = ESP_ERR_NOT_SUPPORTED;
 		goto err;
 	}
@@ -151,9 +170,9 @@ esp_err_t decode_jpeg(pixel_jpeg ***pixels, char * file, int screenWidth, int sc
 	ESP_LOGD(__FUNCTION__, "imageWidth=%d imageHeight=%d", *imageWidth, *imageHeight);
 
 
-	r = jd_decomp(&decoder, outfunc, scale);
-	if (r != JDR_OK) {
-		ESP_LOGE(__FUNCTION__, "Image decoder: jd_decode failed (%d)", r);
+	res = jd_decomp(&decoder, outfunc, scale);
+	if (res != JDR_OK) {
+		ESP_LOGE(__FUNCTION__, "Image decoder: jd_decode failed (%d)", res);
 		ret = ESP_ERR_NOT_SUPPORTED;
 		goto err;
 	}
@@ -168,7 +187,7 @@ esp_err_t decode_jpeg(pixel_jpeg ***pixels, char * file, int screenWidth, int sc
 	fclose(jd.fp);
 	if (*pixels != NULL) {
 		for (int i = 0; i < screenHeight; i++) {
-			free((*pixels)[i]);
+			if ((*pixels)[i]) free((*pixels)[i]);
 		}
 		free(*pixels);
 	}
@@ -186,4 +205,3 @@ esp_err_t release_image(pixel_jpeg ***pixels, int screenWidth, int screenHeight)
 	}
 	return ESP_OK;
 }
-

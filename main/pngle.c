@@ -29,12 +29,8 @@
 #include <math.h>
 
 #include "esp_log.h"
-//#include "miniz.h"
-#include "esp32/rom/miniz.h"
+#include "miniz.h"
 #include "pngle.h"
-
-#include "esp_system.h"
-#include "esp_heap_caps.h"
 
 #define PNGLE_ERROR(s) (pngle->error = (s), pngle->state = PNGLE_STATE_ERROR, -1)
 #define PNGLE_CALLOC(a, b, name) (debug_printf("[pngle] Allocating %zu bytes for %s\n", (size_t)(a) * (size_t)(b), (name)), calloc((size_t)(a), (size_t)(b)))
@@ -114,14 +110,14 @@ pngle_t *pngle_new(uint16_t width, uint16_t height)
 	pngle->pixels = NULL;
 
     //Alocate pixel memory. Each line is an array of IMAGE_W 16-bit pixels; the `*pixels` array itself contains pointers to these lines.
-	ESP_LOGI(__FUNCTION__, "height=%d sizeof(pixel_png *)=%d", height, sizeof(pixel_png *));
+	ESP_LOGD(__FUNCTION__, "height=%d sizeof(pixel_png *)=%d", height, sizeof(pixel_png *));
     pngle->pixels = calloc(height, sizeof(pixel_png *));
     if (pngle->pixels == NULL) {
         ESP_LOGE(__FUNCTION__, "Error allocating memory for lines");
         //ret = ESP_ERR_NO_MEM;
         goto err;
     }
-	ESP_LOGI(__FUNCTION__, "width=%d sizeof(pixel_png)=%d", width, sizeof(pixel_png));
+	ESP_LOGD(__FUNCTION__, "width=%d sizeof(pixel_png)=%d", width, sizeof(pixel_png));
     for (int i = 0; i < height; i++) {
         (pngle->pixels)[i] = malloc(width * sizeof(pixel_png));
         if ((pngle->pixels)[i] == NULL) {

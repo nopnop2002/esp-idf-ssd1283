@@ -1,5 +1,14 @@
 menu "SSD1283 Configuration"
 
+	config GPIO_RANGE_MAX
+		int
+		default 33 if IDF_TARGET_ESP32
+		default 46 if IDF_TARGET_ESP32S2
+		default 48 if IDF_TARGET_ESP32S3
+		default 18 if IDF_TARGET_ESP32C2
+		default 19 if IDF_TARGET_ESP32C3
+		default 30 if IDF_TARGET_ESP32C6
+
 	config WIDTH
 		int "SCREEN WIDTH"
 		range 0 999
@@ -32,8 +41,8 @@ menu "SSD1283 Configuration"
 		int "MOSI(SDA) GPIO number"
 		range 0 46
 		default 23 if IDF_TARGET_ESP32
-		default 35 if IDF_TARGET_ESP32S2
-		default 0  if IDF_TARGET_ESP32C3
+		default 35 if IDF_TARGET_ESP32S2 || IDF_TARGET_ESP32S3
+		default  0 # C3 and others
 		help
 			GPIO number (IOxx) to SPI MOSI.
 			Some GPIOs are used for other purposes (flash connections, etc.) and cannot be used to MOSI.
@@ -44,8 +53,8 @@ menu "SSD1283 Configuration"
 		int "SCLK GPIO number"
 		range 0 46
 		default 18 if IDF_TARGET_ESP32
-		default 36 if IDF_TARGET_ESP32S2
-		default 1  if IDF_TARGET_ESP32C3
+		default 36 if IDF_TARGET_ESP32S2 || IDF_TARGET_ESP32S3
+		default  1 # C3 and others
 		help
 			GPIO number (IOxx) to SPI SCLK.
 			Some GPIOs are used for other purposes (flash connections, etc.) and cannot be used to SCLK.
@@ -56,8 +65,8 @@ menu "SSD1283 Configuration"
 		int "CS GPIO number"
 		range 0 46
 		default 5 if IDF_TARGET_ESP32
-		default 34 if IDF_TARGET_ESP32S2
-		default 10 if IDF_TARGET_ESP32C3
+		default 34 if IDF_TARGET_ESP32S2 || IDF_TARGET_ESP32S3
+		default 10 # C3 and others
 		help
 			GPIO number (IOxx) to SPI CS.
 			Some GPIOs are used for other purposes (flash connections, etc.) and cannot be used to CS.
@@ -68,8 +77,8 @@ menu "SSD1283 Configuration"
 		int "DC GPIO number"
 		range 0 46
 		default 27 if IDF_TARGET_ESP32
-		default 37 if IDF_TARGET_ESP32S2
-		default 2  if IDF_TARGET_ESP32C3
+		default 37 if IDF_TARGET_ESP32S2 || IDF_TARGET_ESP32S3
+		default  2 # C3 and others
 		help
 			GPIO number (IOxx) to SPI DC.
 			Some GPIOs are used for other purposes (flash connections, etc.) and cannot be used to DC.
@@ -80,8 +89,8 @@ menu "SSD1283 Configuration"
 		int "RESET GPIO number"
 		range 0 46
 		default 33 if IDF_TARGET_ESP32
-		default 38 if IDF_TARGET_ESP32S2
-		default 3  if IDF_TARGET_ESP32C3
+		default 38 if IDF_TARGET_ESP32S2 || IDF_TARGET_ESP32S3
+		default  3 # C3 and others
 		help
 			GPIO number (IOxx) to RESET.
 			Some GPIOs are used for other purposes (flash connections, etc.) and cannot be used to RESET.
@@ -92,8 +101,8 @@ menu "SSD1283 Configuration"
 		int "BACKLIGHT GPIO number"
 		range -1 46
 		default 32 if IDF_TARGET_ESP32
-		default 39 if IDF_TARGET_ESP32S2
-		default 4  if IDF_TARGET_ESP32C3
+		default 39 if IDF_TARGET_ESP32S2 || IDF_TARGET_ESP32S3
+		default  4 # C3 and others
 		help
 			GPIO number (IOxx) to BACKLIGHT.
 			When it is -1, BACKLIGHT isn't performed.
