@@ -59,7 +59,8 @@ You have to set this config value with menuconfig.
 - CONFIG_RESET_GPIO   
 - CONFIG_BL_GPIO   
 
-![ssd1283-config](https://user-images.githubusercontent.com/6020549/126050521-5f825f31-4719-4bc8-99e9-d0ab8b08939e.jpg)
+![config-top](https://github.com/nopnop2002/esp-idf-ssd1283/assets/6020549/0fa77554-30d2-4c93-a83a-e5f8573c82c4)
+![config-app](https://github.com/nopnop2002/esp-idf-ssd1283/assets/6020549/003a10ac-cbf6-4f7b-a91a-8902cdd5fc31)
 
 # Graphic support
 ![graph-2](https://user-images.githubusercontent.com/6020549/126050616-fa5d6bd2-6376-4685-be01-160cdf15da96.JPG)
